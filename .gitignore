@@ -1,4 +1,6 @@
-# 游戏本体 - 绝对不能上传
+# 信号变频 · 忽略规则
+
+# 游戏本体（不上传）
 *.dll
 *.pdb
 *.dat
@@ -11,7 +13,7 @@ WindowsPlayer*
 baselib*
 *_Data/
 
-# 用户配置
+# 用户配置（不上传）
 config/
 config copy/
 config.toml
@@ -47,8 +49,6 @@ Desktop.ini
 # 日志
 *.log
 
-# 图标（本地保留）
+# 本地保留（不上传）
 laptop-signal.ico
-
-# 个人文本
 文本.md
