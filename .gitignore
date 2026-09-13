@@ -1,0 +1,54 @@
+# 游戏本体 - 绝对不能上传
+*.dll
+*.pdb
+*.dat
+*.exe
+Night of the Full Moon*
+UnityPlayer*
+GameAssembly*
+UnityCrashHandler*
+WindowsPlayer*
+baselib*
+*_Data/
+
+# 用户配置
+config/
+config copy/
+config.toml
+state.toml
+templates.toml
+config.json*
+*.bak
+
+# 备份 / 副本
+备份/
+Downloads/
+合并源码_*.txt
+* copy*.pyw
+* - 副本*.pyw
+*副本*.pyw
+
+# 打包输出
+dist/
+build/
+*.spec
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+
+# 日志
+*.log
+
+# 图标（本地保留）
+laptop-signal.ico
+
+# 个人文本
+文本.md
