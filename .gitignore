@@ -1,0 +1,37 @@
+# ===== 用户配置（不追踪）=====
+config/
+config copy/
+1config/
+*.toml
+!requirements.txt
+
+# ===== 打包 / 构建产物 =====
+dist/
+build/
+*.spec
+
+# ===== 历史备份 =====
+备份/
+
+# ===== 运行时数据 =====
+logs/
+logs_old_*/
+reports/
+benchmarks/
+
+# ===== 私人文件 =====
+文本.md
+main.pyw.broken_bak
+开发日志.md
+
+# ===== Python 缓存 =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
