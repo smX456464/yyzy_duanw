@@ -1,0 +1,12 @@
+{
+  "game_process": "Night of the Full Moon.exe",
+  "game_path": "",
+  "sync_path": "",
+  "auto_skip": true,
+  "manual_hotkey": "CTRL+B",
+  "auto_skip_seconds": 0,
+  "manual_skip_seconds": 0,
+  "fast_kill": true,
+  "battle_keywords": "开始战斗,开始对决",
+  "auto_skip_lead": 2
+}

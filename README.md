@@ -1,206 +1,87 @@
-# 信号变频 · 月圆之夜断网工具
+# 月圆之夜 · 自动跳过回合（托盘版）
 
-> 版本 1.0 · 项目主页：https://github.com/smX456464
+进对局后，检测到屏幕上出现「开始战斗」字样时自动断网，跳过战斗开场。
 
-为《月圆之夜》(Night of the Full Moon) 设计的 OCR 辅助断网工具。通过识别游戏画面文字，按规则自动触发短暂断网，辅助游戏机制运行。
+## 使用
 
----
+直接运行：
 
-## 工作原理
+    release\AutoSkip\月圆之夜自动跳过.exe
 
-屏幕截图 (mss) → OCR 识别 (RapidOCR) → 规则匹配 (白/黑名单) → 防火墙阻断 (netsh)
+- 无主窗口，仅驻留**系统托盘**（任务栏右下角）
+- **右键托盘图标** → 菜单：
+  - 自动跳过回合（可勾选开关）
+  - 立即跳过一次
+  - 查看状态 / 打开日志 / 设置… / 退出
+- 游戏**自动启动并自动注入**；游戏退出后本工具**自动退出**
 
-命中白名单且未命中黑名单时，短暂断网 N 秒后自动恢复。
+### 手动跳过热键
 
----
+默认 `CTRL+B`，可在「设置…」里改成 `F9`、`CTRL+ALT+A` 等；留空表示不注册。
 
-## 功能特性
+## 设置项
 
-核心能力
-
-- OCR 文字识别（RapidOCR + ONNX Runtime，离线运行）
-- 白名单触发断网 / 黑名单抑制断网
-- 按游戏客户区尺寸分开存储规则（多分辨率支持）
-- 三种匹配模式：正则 / 包含 / 完全相等
-- 否定词过滤（如"12赛季"排除）
-- 连续帧防抖 + 触发冷却
-
-交互设计
-
-- 无边框主窗口，拖动条 + 时钟 + Ping 显示
-- 每个按钮支持长短按双功能
-- 长按视觉反馈（浅黄 → 橙 → 红 → 绿）
-- 规则可视化编辑器（游戏上直接拖动 / 缩放 ROI）
-- 调试叠加框（白名单绿框，黑名单蓝框）
-- 命中高亮 + 命中历史面板
-
-辅助功能
-
-- 音量控制（集成 SoundVolumeView）
-- SoundVolumeView 一键下载
-- 日志系统（环形缓冲）
-- 内置使用手册（短按 📄 打开）
-- 配置热重载（长按 ✕ 3 秒）
-
----
-
-## 环境要求
-
-| 项目 | 要求 |
+| 项 | 说明 |
 |---|---|
-| 操作系统 | Windows 10 1809+ |
-| Python | 3.11+ |
-| 权限 | 管理员（修改防火墙） |
+| 游戏进程名 | 默认 `Night of the Full Moon.exe` |
+| 游戏路径 | 留空自动获取 |
+| 同步启动路径 | 留空则不同步启动。**若该程序已在运行则不会重复启动** |
+| 手动跳过热键 | 默认 `CTRL+B` |
+| 自动断网时长 | `0` = 彻底切断（推荐）；`2~5` = 静默丢包 N 秒后恢复 |
+| 手动断网时长 | 同上，独立配置 |
+| 战斗开始关键字 | 逗号分隔，默认 `开始战斗,开始对决` |
+| 自动触发阈值 | 倒计时 ≤ 此值就断网（默认 2 秒） |
+| ☑ 自动跳过回合 | 总开关 |
+| ☑ 彻底断开 | 关闭全部套接字（最快） |
 
----
+日志文件：`%TEMP%\yyzy_tray.log`
 
-## 快速开始
+## 已知现象
 
-从源码运行：
-
-    git clone https://github.com/smX456464/yyzy_duanw.git
-    cd yyzy_duanw
-    python -m venv .venv
-    .venv\Scripts\activate
-    pip install -r requirements.txt
-    python main.pyw
-
-使用打包好的 exe：从 Releases 下载 → 解压 → 双击 信号变频.exe（允许 UAC）。
-
----
-
-## 界面速览
-
-    顶部：14:32 - 28        （时钟 + Ping）
-    中间：▶ 播放             （点击切换断网）
-    第二行：⏱  🔊  👁  🗑
-    底部：📋  📄  ✕
-
-| 按钮 | 短按 | 长按 |
-|---|---|---|
-| ⏱ | 设置断网秒数 / 显示调试框 | — |
-| 🔊 | 静音 / 恢复游戏音量 | 打开音量设置 |
-| 👁 | 切换 OCR 监控开 / 关 | 打开规则管理 |
-| 🗑 | 清除防火墙规则 | — |
-| 📋 | 打开日志窗口 | — |
-| 📄 | 打开使用手册 | 设置窗口字体 / 配色 |
-| ✕ | 退出 | 重载配置 |
-
----
+关闭游戏时可能出现**一闪而过的 Unity 提示窗**。这是本工具注入导致的已知现象，
+属于正常表现，**无需担心**，不会影响账号、存档与对局数据。游戏窗口真正关闭后，
+本工具会自动退出。
 
 ## 目录结构
 
-信号变频/
-├── main.pyw                   入口
-├── requirements.txt           Python 依赖
-├── README.md                  本文件
-├── 内置文本.md                使用手册
-├── config/                    配置目录（自动生成）
-│   ├── config.toml
-│   ├── templates.toml
-│   └── state.toml
-├── src/                       源码包
-│   ├── main_window.py         主类（Mixin 组合）
-│   ├── mw_ui.py               UI 构建 + 时钟 + 动画
-│   ├── mw_drag.py             拖动 + 长按交互
-│   ├── mw_monitor.py          后台监控 + 高亮 + 音量
-│   ├── mw_dialogs.py          对话框 + 日志 / 文本窗口
-│   ├── template_watcher.py    OCR 监控线程
-│   ├── ocr_engine.py          RapidOCR 封装
-│   ├── capture.py             屏幕截图 + 内存裁剪
-│   ├── rule_manager.py        规则管理对话框
-│   ├── roi_editor.py          ROI 编辑器
-│   ├── roi_overlay.py         调试叠加框
-│   ├── region_selector.py     鼠标框选器
-│   ├── network_tools.py       防火墙 + 网卡
-│   ├── volume_tools.py        SoundVolumeView 封装
-│   ├── volume_settings.py     音量设置 + 下载向导
-│   ├── downloader.py          SoundVolumeView 下载器
-│   ├── md_settings.py         文本窗口设置
-│   ├── config_manager.py      配置读写
-│   ├── win_utils.py           Windows API 封装
-│   └── log_buffer.py          日志系统
-└── 参考/                      历史版本归档
-    ├── README.md
-    ├── genshin_net_blocker.py
-    └── 月圆之夜_*.pyw
+    tools_hook\
+      release\AutoSkip\        ← 编译好的成品（直接用这个）
+        月圆之夜自动跳过.exe
+        yyzyhook.dll
+        app.ico
+        tray_config.json
+      python\                  ← 源码
+        yyzy_tray.py           托盘主程序（UI / 注入 / 断网调度）
+        hook_client.py         管道通信 / 注入 / 热键
+        input_synth.py         外部鼠标键盘模拟
+        close_watcher.py       窗口关闭辅助
+      src\                     ← DLL 源码（C++）
+        dllmain.cpp            入口
+        ws2hook.cpp            ws2_32 钩子（断网实现）
+        pipe.cpp               命名管道命令处理
+        il2cppui.cpp           Unity 反射层（读游戏文字）
+        unityapi_impl.h        Unity API 封装
+        seh_guard.cpp          异常护栏
+        close_intercept.cpp    退出相关（当前为空实现）
+      minhook-1.3.3\           ← 编译依赖
+      build.bat                ← 编译 DLL
+      app.ico                 ← 图标源文件
 
----
+## 重新构建
 
-## 架构设计
+编译 DLL（需要 VS Build Tools 2022）：
 
-NetworkBlockerApp 通过多重继承组合四个 Mixin：
+    build.bat
 
-| Mixin | 职责 | 文件 |
-|---|---|---|
-| MainWindowUI | 界面构建、时钟、动画 | mw_ui.py |
-| MainWindowDrag | 拖动、长短按交互 | mw_drag.py |
-| MainWindowMonitor | OCR 监控、防火墙、音量、高亮 | mw_monitor.py |
-| MainWindowDialogs | 对话框、日志 / 文本窗口 | mw_dialogs.py |
+打包 exe（需要 PyInstaller）：
 
-关键设计
+    pyinstaller --noconfirm --clean --distpath out yyzy_tray.spec
 
-- 一次截图 + 内存裁剪：抓一次整个客户区，用 numpy 切片在内存裁剪各 ROI
-- OCR 结果哈希缓存：用 crop 内容哈希作 key，LRU 缓存最近 100 条结果
-- 调试叠加框捕获排除：SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)
-- 规则按分辨率精确匹配：按 f"{cw}x{ch}" 分开存储，不做兜底
+## 工作原理
 
----
-
-## 打包
-
-onedir 模式（推荐，秒开）：
-
-    python -m PyInstaller --noconfirm --clean --windowed --uac-admin --name "信号变频" --icon "laptop-signal.ico" --collect-all rapidocr_onnxruntime --collect-all onnxruntime --collect-all mss --collect-all tomlkit --hidden-import PIL._tkinter_finder --hidden-import numpy main.pyw
-
-输出：dist\信号变频\ 文件夹
-
-onefile 模式（单文件，启动慢 5~10 秒）：加 --onefile 和 --add-data "内置文本.md;."。
-
----
-
-## 常见问题
-
-Q: OCR 一直识别但从不断网？
-打开日志（短按 📋），看 "👁 检测 ... got='xxx'"。got 空 → ROI 不对；有值但不匹配 → 把实际文字复制到规则里。
-
-Q: 音量功能不可用？
-长按 🔊 → 点「⬇ 自动下载 SoundVolumeView」，或手动放到 soundvolumeview\ 目录。
-
-Q: 改了 config.toml 没生效？
-长按 ✕ 3 秒重载。
-
-Q: 窗口被遮挡，跳过检测？
-监控要求游戏窗口完全可见。把游戏切到前台。
-
----
-
-## 开发坑点
-
-Tkinter
-
-- 字体正负值：正数 = 点（DPI 二次放大），负数 = 像素
-- DPI 感知：必须在 tk.Tk() 之前调 SetProcessDpiAwareness(2)
-- 透明色：用 #00FF00 或 #FE01FE
-
-OCR
-
-- 正则 [...]* 会匹配空，用 +
-- 中文字符类 [歌声] 只匹配单字，词组用 |
-
-文件编码
-
-- 读 .py / .toml：utf-8-sig
-- 写 .py / .toml：utf-8（不带 BOM），否则 tomlkit 报 EmptyKeyError
-
----
-
-## 许可
-
-MIT License。
-
-第三方组件：RapidOCR (Apache 2.0)、ONNX Runtime (MIT)、mss (MIT)、tomlkit (MIT)、SoundVolumeView (NirSoft Freeware)。
-
----
-
-项目主页：https://github.com/smX456464
+1. 托盘程序把 `yyzyhook.dll` 注入游戏进程（远程 `LoadLibrary`，失败退回 `SetWindowsHookEx`）
+2. DLL 内一个线程每 250ms 遍历游戏里所有激活的 `TextMeshProUGUI`，读 `m_text` 内容
+3. 一旦文本包含关键字（如「开始战斗」），立即置位断网标志
+4. 断网动作：钩住 `ws2_32` 的 `send`/`recv`，标志置位时**关闭全部套接字**
+   —— 因为战斗连接早已建立，只有在进程内的数据通路上才能掐断
+5. 游戏检测到连接断开，回到商店，战斗开场被跳过

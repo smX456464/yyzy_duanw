@@ -1,54 +1,22 @@
-# 信号变频 · 忽略规则
-
-# 游戏本体（不上传）
-*.dll
+# 编译中间产物
+*.obj
+*.exp
+*.lib
 *.pdb
-*.dat
-*.exe
-Night of the Full Moon*
-UnityPlayer*
-GameAssembly*
-UnityCrashHandler*
-WindowsPlayer*
-baselib*
-*_Data/
+*.ilk
 
-# 用户配置（不上传）
-config/
-config copy/
-config.toml
-state.toml
-templates.toml
-config.json*
-*.bak
-
-# 备份 / 副本
-备份/
-Downloads/
-合并源码_*.txt
-* copy*.pyw
-* - 副本*.pyw
-*副本*.pyw
-
-# 打包输出
-dist/
+# PyInstaller
 build/
-*.spec
-
-# Python 缓存
+out/
+dist/
 __pycache__/
-*.py[cod]
-*.egg-info/
+*.pyc
 
-# 编辑器 / 系统
-.vscode/
-.idea/
-Thumbs.db
-Desktop.ini
-
-# 日志
+# 运行时生成
 *.log
+*.log.old
+hook_enabled.flag
 
-# 本地保留（不上传）
-laptop-signal.ico
-文本.md
+# 本地开发目录（不提交）
+tools_hook/
+夜圆之夜记录/
